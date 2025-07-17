@@ -15,6 +15,7 @@ struct TerminalUtilitiesCLI: AsyncParsableCommand {
             SizeCommand.self,
             SizeObserverCommand.self,
             AnimateCommand.self,
+            RepeatingTimer.self
         ])
     }
 
@@ -105,5 +106,29 @@ struct AnimateCommand: AsyncParsableCommand {
         print("\n")
         print("🎉_________________GOAL!_________________🎉")
         print("\n")
+    }
+}
+
+struct RepeatingTimer: AsyncParsableCommand {
+    static var configuration: CommandConfiguration {
+        CommandConfiguration(
+            commandName: "timer",
+            abstract: "Run a repeating timer for 5 seconds"
+        )
+    }
+
+    func run() async throws {
+        print(">>> Starting timer. Press ctrl+c to exit.\n")
+        Terminal.onInterruptionExit {
+            print("Bye 🙂")
+        }
+
+        var index = 0
+        let timerTask = Task.repeatingTimer(interval: 1) {
+            print("\(index)...")
+            index += 1
+        }
+
+        await timerTask.value
     }
 }
